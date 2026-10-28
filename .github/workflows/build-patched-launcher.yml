@@ -1,0 +1,30 @@
+name: Build Patched Horizon Launcher
+
+on:
+  push:
+    branches: [ '**' ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build Horizon Launcher (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build Launcher
+        shell: bash
+        run: |
+          cd launcher
+          cargo build --release --bin horizon-launcher
+
+      - name: Upload Launcher Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: horizon-launcher-windows-x64
+          path: launcher/target/release/horizon-launcher.exe
+          retention-days: 14
